@@ -12,7 +12,7 @@ var fs=require('fs')
 var aws=require('aws-sdk')
 aws.config.setPromisesDependency(Promise)
 aws.config.region=config.region
-var env=require('../../../bin/exports')()
+var outputs=require('../../../bin/exports')
 
 exports.exists=function(id,test,not=true){
     return api({
@@ -33,8 +33,8 @@ exports.run=function(opts,test,not=true){
 }
 exports.api=api
 function  api(opts){
-    return env.then(function(envs){
-        var href=opts.path ? envs["QNA-DEV-MASTER-API"]+'/'+opts.path : opts.href
+    return outputs('dev/master').then(function(output){
+        var href=opts.path ? output.ApiEndpoint+'/'+opts.path : opts.href
         console.log(opts)
         var url=Url.parse(href)
         var request={

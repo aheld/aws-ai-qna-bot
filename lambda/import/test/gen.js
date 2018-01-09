@@ -1,5 +1,5 @@
 #! /bin/env node
-var config=require('../../config')
+var config=require('../../../config')
 process.env.AWS_PROFILE=config.profile
 process.env.AWS_DEFAULT_REGION=config.region
 
@@ -7,7 +7,7 @@ var faker=require('faker').lorem
 var range=require('range').range
 var fs=require('fs')
 
-var env=require('../../bin/exports')()
+var outputs=require('../../../bin/exports')
 var aws=require("aws-sdk")
 var s3=new aws.S3({
     region:config.region
@@ -17,8 +17,8 @@ var count=10000
 var data=range(0,count).map(qna).join('\n')
 
 module.exports=function(){
-    return env.then(envs=>s3.putObject({
-        Bucket:envs["QNA-DEV-BUCKET"],
+    return outputs('dev/bucket').then(outputs=>s3.putObject({
+        Bucket:outputs.Bucket,
         Key:"import/bulk-test",
         Body:data
     }).promise())

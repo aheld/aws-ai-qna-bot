@@ -9,18 +9,13 @@ var fs=Promise.promisifyAll(require('fs'))
 var aws=require('aws-sdk')
 aws.config.setPromisesDependency(Promise)
 aws.config.region=config.region
-var Exports=require('./exports')
 
 module.exports=function(event){
-    return Exports.then(function(exports){
-        process.env.AWS_ACCESS_KEY_ID=aws.config.credentials.accessKeyId
-        process.env.AWS_SECRET_ACCESS_KEY=aws.config.credentials.secretAccessKey
-        process.env.AWS_REGION=config.region
-
-        process.env.SALT='salt'
-    })
-    .then(()=>run(require('../index.js').handler,event))
-    .return(true)
+    process.env.AWS_ACCESS_KEY_ID=aws.config.credentials.accessKeyId
+    process.env.AWS_SECRET_ACCESS_KEY=aws.config.credentials.secretAccessKey
+    process.env.AWS_REGION=config.region
+    
+    return run(require('../index.js').handler,event).return(true)
 }
 
 

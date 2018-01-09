@@ -23,6 +23,7 @@ exports.register=function(fnc){
 }
 exports.server=function(test){
     app.put('/*', function (req, res) {
+        console.log("recieved")
         callback(req.body.Status)
         res.send()
     })

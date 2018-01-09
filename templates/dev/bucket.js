@@ -13,8 +13,7 @@ module.exports={
    },
    "Outputs": {
         "Bucket": {
-            "Value": {"Ref": "Bucket"},
-            "Export":{"Name":"QNA-DEV-BUCKET"}
+            "Value": {"Ref": "Bucket"}
         }
    }
 }

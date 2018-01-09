@@ -25,8 +25,7 @@ const extractSass = new ExtractTextPlugin({
     filename: "[name].css"
 });
 
-module.exports = require('../../bin/exports')(config.region).then(function(result){
-    return {
+module.exports{
     target:"node",
     entry:{
         "unit-test":"./test/test.js"
@@ -88,5 +87,4 @@ module.exports = require('../../bin/exports')(config.region).then(function(resul
           }
         ]
     }
-    }
-})
+}

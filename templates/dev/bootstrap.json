@@ -5,6 +5,12 @@
       "Properties": {
         "VersioningConfiguration":{
             "Status":"Enabled"
+        },
+        "LifecycleConfiguration":{
+            "Rules":[{
+                "Status":"Enabled",
+                "NoncurrentVersionExpirationInDays":1
+            }]
         }
       }
     },
@@ -44,16 +50,10 @@
     "Bucket": {
       "Value": {
         "Ref": "Bucket"
-      },
-      "Export":{
-        "Name":"QNA-BOOTSTRAP-BUCKET"
       }
     },
     "Prefix": {
-      "Value": "artifacts/aws-ai-qna-bot",
-      "Export":{
-        "Name":"QNA-BOOTSTRAP-PREFIX"
-      }
+      "Value": "artifacts/aws-ai-qna-bot"
     }
   },
   "Parameters": {

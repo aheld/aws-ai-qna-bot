@@ -1,4 +1,4 @@
-LAMBDAS=$(shell for l in $$(ls ./lambda | grep -v util);do echo lambda/$$l;done)
+LAMBDAS=$(shell for l in $$(ls ./lambda | grep -v test.js);do echo lambda/$$l;done)
 TEMPLATES=$(shell for l in $$(ls ./templates | grep -v util);do echo templates/$$l;done)
 
 All: templates lambda website build
@@ -12,17 +12,16 @@ config.json:
 	node config.js.example > config.json
 
 lambda: $(LAMBDAS) build
-	for l in $^; do \
+	for l in $(LAMBDAS); do \
 		cd $$l && make; \
 		cd ../..;	\
 	done;			
 
 templates: $(TEMPLATES) build
-	for l in $^; do \
+	for l in $(TEMPLATES); do \
 		cd $$l && make; \
 		cd ../..;	\
 	done;			
-
 
 website: build
 	cd ./website; make 

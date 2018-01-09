@@ -16,7 +16,6 @@ context.logStreamName = null;
 context.identity = null;
 context.clientcontext = null;
 
-
 module.exports=function(handler,event){
     return Promise.try(function(){
         if(typeof(event)==="object"){
@@ -32,9 +31,7 @@ module.exports=function(handler,event){
                     chalk.red("Error:"+err)
                     rej(err)
                 }else{
-                    console.log(chalk.blue("Success:"+JSON.stringify(message)))
-                    console.log(chalk.blue("data:"+JSON.stringify(data)))
-                    res(message)
+                    res()
                 }
             }
             context.done=callback

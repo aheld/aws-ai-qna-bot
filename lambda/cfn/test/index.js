@@ -12,9 +12,6 @@ module.exports={
         cb()
     },
     api:{
-        tearDown:function(cb){
-            setTimeout(()=>cb(),2000)
-        },
         compress:function(test){
             lifecycle(require('./params/api.compress'),test)
         },
@@ -28,14 +25,14 @@ module.exports={
                 params.update(),
                 params.delete()
             ).spread(function(c,u,d){
-                return tmp.CreateAsync(c.ResourceProperties).delay(2000)
+                return tmp.CreateAsync(c.ResourceProperties)
                 .tap(test.ok)
                 .log("Create Complete")
                 .tap(id=>oldId=id)
                 .then(id=>tmp.UpdateAsync(id,
                     c.ResourceProperties,
                     u.ResourceProperties
-                ).delay(2000))
+                ))
                 .log("Update Complete")
                 .tap(test.ok)
                 .then(id=>tmp.DeleteAsync(oldId,u.ResourceProperties))
@@ -44,8 +41,6 @@ module.exports={
             })
             .catch(test.error)
             .finally(test.done)
-
-            
         }
     },
     lex:require('./lex'),
