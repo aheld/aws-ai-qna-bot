@@ -32,7 +32,6 @@ function run(stack,options={}){
     try {
         var increments=require('./.inc')
     } catch(e){
-        console.log(e)
         var increments={}
     }
     var full=[options.namespace].concat(stack.split('/')).filter(x=>x).join('-')

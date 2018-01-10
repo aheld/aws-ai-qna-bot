@@ -17,7 +17,7 @@ lambda: $(LAMBDAS) build
 		cd ../..;	\
 	done;			
 
-bootstrap:
+bootstrap: build
 	cd templates/dev && make ../../build/templates/dev/bootstrap.json; cd ../..
 
 templates: $(TEMPLATES) build
