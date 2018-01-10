@@ -13,6 +13,7 @@ module.exports=class CognitoUser extends require('./base') {
                     Bucket:params.Bucket,
                     Prefix:params.Prefix
                 }).promise().tap(console.log)
+                .then(x=>x.Versions.concat(x.DeleteMarkers))
                 .tap(x=>console.log("Files",x))
                 .then(function(files){
                     return files.map(file=>{return {
