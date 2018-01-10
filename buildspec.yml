@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+      - curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
       - yum install -y install nodejs docker
       - npm install
       - service docker start
