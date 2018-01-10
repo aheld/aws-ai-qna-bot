@@ -3,10 +3,10 @@ version: 0.2
 phases:
   install:
     commands:
+      - curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+      - yum install -y install nodejs docker
       - npm install
-      - yum install docker
       - service docker start
-      - pip install aws-cli
   pre_build:
     commands:
       - ./test/configure.sh
