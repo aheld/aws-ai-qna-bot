@@ -17,7 +17,7 @@ module.exports=wait
 
 function wait(stackname,options){
     var StackName=name(stackname,{})
-    new Promise(function(res,rej){
+    return new Promise(function(res,rej){
         if(options.show){console.log("Waiting on stack:"+StackName)}
         const spinner = new Spinner(options.show)
         next()

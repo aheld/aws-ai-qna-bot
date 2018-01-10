@@ -6,7 +6,7 @@ All: templates lambda website build
 build:
 	mkdir -p build; mkdir -p build/lambda; mkdir -p build/templates/test;mkdir -p build/templates;mkdir -p build/documents; mkdir -p build/templates/dev
 
-.PHONY: lambda templates upload website test
+.PHONY: lambda templates upload website test bootstrap
 
 config.json:
 	node config.js.example > config.json
@@ -16,6 +16,9 @@ lambda: $(LAMBDAS) build
 		cd $$l && make; \
 		cd ../..;	\
 	done;			
+
+bootstrap:
+	cd templates/dev && make ../../build/templates/dev/bootstrap.json; cd ../..
 
 templates: $(TEMPLATES) build
 	for l in $(TEMPLATES); do \

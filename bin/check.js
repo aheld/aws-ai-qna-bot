@@ -18,6 +18,7 @@ if (require.main === module) {
     var argv=require('commander')
     var ran
     var args=argv.version('1.0')
+        .name('npm run check')
         .arguments('<stack>')
         .usage("<stack> [options]")
         .action(function(stack,options){

@@ -12,9 +12,8 @@ module.exports=class CognitoUser extends require('./base') {
                 s3.listObjectVersions({
                     Bucket:params.Bucket,
                     Prefix:params.Prefix
-                }).promise()
+                }).promise().tap(console.log)
                 .tap(x=>console.log("Files",x))
-                .get("Versions")
                 .then(function(files){
                     return files.map(file=>{return {
                         Key:file.Key,

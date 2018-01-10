@@ -25,10 +25,10 @@ const extractSass = new ExtractTextPlugin({
     filename: "[name].css"
 });
 
-module.exports{
+module.exports={
     target:"node",
     entry:{
-        "unit-test":"./test/test.js"
+        "unit-test":"./test/unit.js"
     },
     output:{
         path:path.join(__dirname,'../test'),

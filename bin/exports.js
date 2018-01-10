@@ -34,7 +34,11 @@ module.exports=function(stack,options={}){
         .return(exports)
     }else{
         var outputs={}
-        return launch.sure(stack,options)
+        return Promise.resolve((function(){ 
+            if(!options.quick){
+                return launch.sure(stack,options)
+            }
+        })())
         .then(()=>cf.describeStacks({
             StackName:name(stack,{})
         }).promise())
@@ -45,7 +49,7 @@ module.exports=function(stack,options={}){
 }
 
 if(!module.parent){
-    module.exports(process.argv[2],{silent:true})
+    module.exports(process.argv[2],{silent:true,quick:true})
     .then(exports=>console.log(JSON.stringify(exports,null,4)))
     .catch(x=>console.log("error"+x))
 }

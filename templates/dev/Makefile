@@ -4,8 +4,8 @@ DST=../../build/templates/dev
 
 all:$(DST)/domain.json $(DST)/bucket.json $(DST)/cognito.json $(DST)/master.json  $(DST)/bootstrap.json $(DST)/lambda.json $(DST)/api.json
 
-$(DST)/bootstrap.json:./bootstrap.json
-	 cp ./bootstrap.json $(DST)/bootstrap.json
+$(DST)/bootstrap.json:./bootstrap/*
+	 $(BUILD) $(NAME)/bootstrap
 
 $(DST)/domain.json:./domain.*
 	 $(BUILD) $(NAME)/domain

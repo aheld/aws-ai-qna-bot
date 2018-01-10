@@ -4,6 +4,7 @@ export AWS_PROFILE=$(node -e "console.log(JSON.stringify(require('$__dirname'+'/
 export AWS_DEFAULT_REGION=$(node -e "console.log(JSON.stringify(require('$__dirname'+'/../config')))" | $(npm bin)/jq --raw-output ".region")
 
 OUTPUT=$($__dirname/exports.js dev/bootstrap --silent)
+echo $OUTPUT
 BUCKET=$( echo $OUTPUT | $(npm bin)/jq --raw-output '."Bucket"')
 PREFIX=$( echo $OUTPUT | $(npm bin)/jq --raw-output '."Prefix"')
 

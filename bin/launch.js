@@ -6,6 +6,7 @@ var aws=require('aws-sdk')
 var Promise=require('bluebird')
 aws.config.setPromisesDependency(Promise)
 aws.config.region=require('../config').region
+var _=require('lodash')
 var fs=require('fs')
 var cf=new aws.CloudFormation()
 var chalk=require('chalk')
@@ -17,6 +18,7 @@ var ran
 
 if (require.main === module) {
     var args=argv.version('1.0')
+        .name("npm run stack")
         .arguments('<stack> <op> [options]')
         .usage("<stack> <op> [options]")
         .option('-v, --verbose',"print additional debuging information")
@@ -81,7 +83,7 @@ function up(stack,options){
     return syntax(stack,options)
     .then(()=>{
         var StackName=name(stack,{inc:true})
-        log("launching stack",options)
+        log(`launching stack:${stack}`,options)
         if(!options.dryRun){
             if(options.local){
                 var start=cf.createStack({
@@ -96,6 +98,7 @@ function up(stack,options){
                     var bucket=exp.Bucket
                     var prefix=exp.Prefix
                     var url=`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${stack}.json`
+                    console.log(url)
                     return cf.createStack({
                         StackName,
                         Capabilities:["CAPABILITY_NAMED_IAM"],
@@ -147,14 +150,12 @@ function update(stack,options){
         log(x,options)
         process.exit(1)
     })
-    log("updating stack",options)
-    return syntax(stack)
 }
 function down(stack,options){
     var StackName=name(stack,{})
     log("terminating stack",options)
     if(!options.dryRun){
-        cf.describeStacks({
+        return cf.describeStacks({
             StackName
         }).promise()
         .then(x=>x.Stacks[0].StackId)
@@ -169,7 +170,7 @@ function down(stack,options){
                 })
             }
         })
-        .catch(x=>x.message.match(/.*does not exist$/),function(){})
+        .catch(x=>_.get(x,"message","").match(/.*does not exist$/),function(){})
         .catch(x=>{
             log(x,options)
             process.exit(1)
@@ -183,7 +184,7 @@ function sure(stack,options={}){
     return cf.describeStacks({StackName}).promise()
     .then(()=>wait(stack,{show:options.interactive && !options.silent}))
     .then(x=>log(`${stack} is up as ${StackName}`,options))
-    .catch(x=>x.message.match(/.*does not exist$/),function(){
+    .catch(x=>_.get(x,"message","").match(/.*does not exist$/),function(){
         log("Stack does not exist",options)
         return up(stack,options)
     })

@@ -16,7 +16,7 @@ var aws=require('../../lib/util/aws')
 var s3=new aws.S3()
 var outputs=require('../../../../bin/exports')
 
-var setup=outputs('dev/api',{silent:false,wait:true}).then(function(output){
+var setup=outputs('dev/api',{silent:false,wait:true}).then(function(output){    
     return {
         restApiId:output.ApiId,
         value:"0"

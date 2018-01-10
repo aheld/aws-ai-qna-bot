@@ -1,16 +1,18 @@
-var outputs=require('../../bin/exports')
+var fs=require('fs')
 
-module.exports=outputs('dev/bootstrap')
-.then(function(output){
-    return {
-   "Description": "This template creates dev ElasticSearch Cluster",
-   "Resources": {
+module.exports={
+  "Resources": {
     "Bucket": {
       "Type": "AWS::S3::Bucket",
-      "DeletionPolicy": "Delete",
       "Properties": {
         "VersioningConfiguration":{
             "Status":"Enabled"
+        },
+        "LifecycleConfiguration":{
+            "Rules":[{
+                "Status":"Enabled",
+                "NoncurrentVersionExpirationInDays":1
+            }]
         }
       }
     },
@@ -26,11 +28,7 @@ module.exports=outputs('dev/bootstrap')
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "S3Bucket":output.Bucket ,
-          "S3Key": {"Fn::Join":["",[
-            output.Prefix,
-            "/lambda/cfn.zip"
-          ]]}
+            "ZipFile":fs.readFileSync(__dirname+'/handler.js','utf-8')
         },
         "Handler": "index.handler",
         "MemorySize": "128",
@@ -79,12 +77,50 @@ module.exports=outputs('dev/bootstrap')
           ]
         }
       }
-    }
-   },
-   "Outputs": {
-        "Bucket": {
-            "Value": {"Ref": "Bucket"}
+    },
+    "ReadPolicy":{
+        "Type" : "AWS::S3::BucketPolicy",
+        "Condition":"Public",
+        "Properties" : {
+            "Bucket" : {"Ref":"Bucket"},
+            "PolicyDocument" : {
+                "Version":"2012-10-17",
+                "Statement":[{
+                    "Sid":"PublicReadForGetBucketObjects",
+                    "Effect":"Allow",
+                    "Principal":{"AWS":"*"},
+                    "Action":["s3:Get*","s3:List*"],
+                    "Resource":[
+                        {"Fn::Sub":"arn:aws:s3:::${Bucket}*"}
+                    ]
+                }]
+            }
         }
-   }
+    }
+  },
+  "Conditions": {},
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Bootstrap bucket for QnABot assets",
+  "Mappings": {},
+  "Outputs": {
+    "Bucket": {
+      "Value": {
+        "Ref": "Bucket"
+      }
+    },
+    "Prefix": {
+      "Value": "artifacts/aws-ai-qna-bot"
+    }
+  },
+  "Parameters": {
+    "Public":{
+        "Type":"String",
+        "Default":"PRIVATE"
+    }
+  },
+  "Conditions":{
+    "Public":{"Fn::Equals":[{"Ref":"Public"},"PUBLIC"]}
+  }
 }
-})
+
+
