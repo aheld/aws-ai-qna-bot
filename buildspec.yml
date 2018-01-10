@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
-      - yum install -y install nodejs docker
+      - yum install -y install nodejs docker git
       - npm install
       - service docker start
   pre_build:
