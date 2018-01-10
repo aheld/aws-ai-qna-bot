@@ -4,8 +4,7 @@ phases:
   install:
     commands:
       - curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
-      - yum install -y install nodejs docker git python-pip 
-      - pip install awscli
+      - yum install -y install nodejs docker git aws-cli
       - npm install
       - service docker start
   pre_build:
