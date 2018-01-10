@@ -26,3 +26,4 @@ artifacts:
   files:
     - ./test/debug.log
     - ./test/output.log
+    - ./test/output.json
