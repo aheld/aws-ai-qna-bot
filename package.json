@@ -20,7 +20,7 @@
     "check": "./bin/check.js",
     "stack": "./bin/launch.js",
     "upload": "make upload -j 4",
-    "bootstrap": "make bootstrap && ./bin/launch.js dev/bootstrap make-sure --no-check --no-interactive --verbose --local && npm run upload",
+    "bootstrap": "./bin/launch.js dev/bootstrap make-sure --no-interactive --verbose && npm run upload",
     "up": "npm run stack dev/master up"
   },
   "repository": {

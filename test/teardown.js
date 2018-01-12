@@ -16,11 +16,29 @@ cf.listStacks({
 "CREATE_IN_PROGRESS","CREATE_FAILED","CREATE_COMPLETE","ROLLBACK_FAILED","ROLLBACK_COMPLETE","DELETE_FAILED","UPDATE_COMPLETE","UPDATE_ROLLBACK_FAILED","UPDATE_ROLLBACK_COMPLETE"
     ]
 }).promise()
-.then(x=>x.StackSummaries
-    .filter(x=>x.StackName.match(prefix))
-    .map(x=>x.StackName))
-.map(StackName=>cf.deleteStack({StackName})
-    .promise()
-    .then(()=>console.log(`deleting: ${StackName}`)))
+.then(x=>x.StackSummaries.filter(x=>x.StackName.match(prefix))
+.map(x=>x.StackName))
+.map(StackName=>cf.deleteStack({StackName}).promise()
+.then(()=>{
+    console.log(`deleting: ${StackName}`)
+    return new Promise(function(rej,res){
+        next()
+        function next(){
+            cf.listStacks({
+                StackStatusFilter:["DELETE_IN_PROGRESS"]
+            }).promise()
+            .then(x=>x.StackSummaries.filter(x=>x.StackName.match(prefix)).length)
+            .then(count=>{
+                console.log('stacks up:'+count)
+                if(count<1){
+                    res()
+                }else{
+                    setTimeout(()=>next(),10*1000) 
+                }
+            })
+            .catch(rej)
+        }
+    })
+}))
 
 

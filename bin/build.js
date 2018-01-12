@@ -36,7 +36,7 @@ if(!module.parent){
         argv.outputHelp()
     }
 }
-
+module.exports=create
 function create(options){
     var stack=options.stack
     log('building '+(options.stack || options.input),stack,!options.silent)

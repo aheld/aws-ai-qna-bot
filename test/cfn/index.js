@@ -45,7 +45,7 @@ module.exports=Promise.resolve(zip.generateAsync({type:'nodebuffer'}))
                     Type:"LINUX_CONTAINER"
                 },
                 "Name":{"Fn::Sub":"${AWS::StackName}-test-build"},
-                ServiceRole:{"Ref":"ServiceRole"},
+                ServiceRole:{"Ref":"TestServiceRole"},
                 Source:{
                     Type:"GITHUB",
                     Location:"https://github.com/awslabs/aws-ai-qna-bot.git",
@@ -139,6 +139,27 @@ module.exports=Promise.resolve(zip.generateAsync({type:'nodebuffer'}))
         "BuildLambda": lambda("build"),
         "UploadLambda": lambda("zip"),
         "ClearLambda": lambda("clear"),
+        "TestServiceRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "codebuild.amazonaws.com"
+                  },
+                  "Action": "sts:AssumeRole"
+                }
+              ]
+            },
+            "Path": "/",
+            "ManagedPolicyArns": [
+              "arn:aws:iam::aws:policy/AdministratorAccess"
+            ],
+          }
+        },
         "ServiceRole": {
           "Type": "AWS::IAM::Role",
           "Properties": {

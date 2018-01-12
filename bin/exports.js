@@ -21,9 +21,10 @@ aws.config.setPromisesDependency(Promise)
 aws.config.region=require('../config').region
 var name=require('./name')
 var launch=require('./launch')
-
+var _=require('lodash')
 var cf=new aws.CloudFormation()
-module.exports=function(stack,options={}){
+
+module.exports=_.memoize(function(stack,options={}){
     if(!stack){
 
         var exports={}
@@ -34,19 +35,15 @@ module.exports=function(stack,options={}){
         .return(exports)
     }else{
         var outputs={}
-        return Promise.resolve((function(){ 
-            if(!options.quick){
-                return launch.sure(stack,options)
-            }
-        })())
-        .then(()=>cf.describeStacks({
+        
+       return cf.describeStacks({
             StackName:name(stack,{})
-        }).promise())
+        }).promise()
         .then(x=>x.Stacks[0].Outputs)
         .map(x=>outputs[x.OutputKey]=x.OutputValue)
         .return(outputs)
     }
-}
+},(stack,options)=>stack)
 
 if(!module.parent){
     module.exports(process.argv[2],{silent:true,quick:true})

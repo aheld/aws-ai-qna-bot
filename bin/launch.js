@@ -10,22 +10,25 @@ var _=require('lodash')
 var fs=require('fs')
 var cf=new aws.CloudFormation()
 var chalk=require('chalk')
+var build=require('./build')
 var check=require('./check')
 var argv=require('commander')
 var name=require('./name')
 var wait=require('./wait')
+var s3=new aws.S3()
 var ran
 
 if (require.main === module) {
     var args=argv.version('1.0')
         .name("npm run stack")
-        .arguments('<stack> <op> [options]')
-        .usage("<stack> <op> [options]")
+        .arguments('[stack] [op] [options]')
+        .usage("[stack] [op] [options]")
         .option('-v, --verbose',"print additional debuging information")
         .option('-d, --dry-run',"run command but do not launch any stacks")
         .option('--no-check',"do not check stack syntax")
         .option('-q --silent',"do output information")
-        .option('--local',"use local version of template")
+        .option('--action <action>',"the opteration to do")
+        .option('--input <input>',"input template")
         .option('--no-wait',"do not wait for stack to complete")
         .option('--no-interactive',"omit interactive elements of output (spinners etc.)")
         .on('--help',()=>{
@@ -42,9 +45,14 @@ if (require.main === module) {
         })
         .parse(process.argv)
 
-    var stack=argv.args[0]
-    var op=argv.args[1]
     var options=argv
+    var stack=!options.input ? options.args[0] : options.input.split('/')
+        .reverse()
+        .filter(x=>x)
+        .slice(0,2)
+        .reverse().join('-').split('.')[0]
+    var op=options.input ? options.args[0] : options.args[1]
+    console.log(stack,op,options)
     if( stack && op){
         switch(op){
             case "up":
@@ -80,18 +88,25 @@ function syntax(stack,options){
     }
 }
 function up(stack,options){
-    return syntax(stack,options)
+    return build({
+        stack:stack,
+        input:options.input,
+        silent:options.silent
+    })
     .then(()=>{
         var StackName=name(stack,{inc:true})
         log(`launching stack:${stack}`,options)
         if(!options.dryRun){
-            if(options.local){
+            var template=fs.readFileSync(
+                `${__dirname}/../build/templates/${stack}.json`
+            ,'utf-8')
+            if(Buffer.byteLength(template)<51200){
+                console.log(template) 
                 var start=cf.createStack({
                     StackName,
                     Capabilities:["CAPABILITY_NAMED_IAM"],
                     DisableRollback:true,
-                    TemplateBody:fs.readFileSync(
-                        `${__dirname}/../build/templates/${stack}.json`,'utf-8')
+                    TemplateBody:template
                 }).promise()
             }else{
                 var start=bootstrap().then(function(exp){
@@ -99,14 +114,20 @@ function up(stack,options){
                     var prefix=exp.Prefix
                     var url=`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${stack}.json`
                     console.log(url)
-                    return cf.createStack({
+                    return s3.putObject({
+                        Bucket:bucket,
+                        Key:`${prefix}/templates/${stack}.json`,
+                        Body:template
+                    }).promise()
+                    .then(()=>cf.createStack({
                         StackName,
                         Capabilities:["CAPABILITY_NAMED_IAM"],
                         DisableRollback:true,
                         TemplateURL:url
-                    }).promise()
+                    }).promise())
                 })
             }
+
             return start.then(x=>{  
                 log(`stackname: ${StackName}`,options)
                 log(`stackId: ${x.StackId}`,options)
