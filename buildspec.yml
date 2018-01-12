@@ -3,15 +3,11 @@ version: 0.2
 phases:
   install:
     commands:
-      - curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
-      - yum install -y install nodejs docker git aws-cli
       - npm install
-      - service docker start
   pre_build:
     commands:
       - ./test/configure.sh
       - ./test/setup.sh
-      - docker run -d -P selenium/standalone-chrome
   build:
     commands:
       - ./test/test.sh
