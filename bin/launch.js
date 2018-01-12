@@ -22,7 +22,8 @@ if (require.main === module) {
     var args=argv.version('1.0')
         .name("npm run stack")
         .arguments('[stack] [op] [options]')
-        .usage("[stack] [op] [options]")
+        .usage(["[stack] [op] [options]",
+        .usage("--input <file> --action <op> [options]")
         .option('-v, --verbose',"print additional debuging information")
         .option('-d, --dry-run',"run command but do not launch any stacks")
         .option('--no-check',"do not check stack syntax")
@@ -51,8 +52,7 @@ if (require.main === module) {
         .filter(x=>x)
         .slice(0,2)
         .reverse().join('-').split('.')[0]
-    var op=options.input ? options.args[0] : options.args[1]
-    console.log(stack,op,options)
+    var op=options.action || (options.input ? options.args[0] : options.args[1])
     if( stack && op){
         switch(op){
             case "up":
