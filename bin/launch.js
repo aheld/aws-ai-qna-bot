@@ -72,7 +72,7 @@ if (require.main === module) {
 }
 function syntax(stack,options){
     if(options.check){
-        return check(stack)
+        return check(stack,options)
         .tap(x=>log("Template Valid",options))
         .tapCatch(x=>log(x.message,options))
     }else{

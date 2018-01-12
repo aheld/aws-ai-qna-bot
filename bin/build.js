@@ -15,19 +15,40 @@ var fs = require('fs');
 var outputs=require('./exports')
 
 if(!module.parent){
-    create(process.argv[2],{silent:process.argv[3]})
+    var argv=require('commander')
+    var ran
+    var args=argv.version('1.0')
+        .name(process.argv[1].split('/').reverse()[0])
+        .option('--verbose',"silent")
+        .option('--stack <stack>',"stack to build")
+        .option('--input <input>',"input file")
+        .option('--output <output>',"output file")
+        .parse(process.argv)
+
+
+    if( args.stack || (args.input && args.output)){
+        create({
+            silent:!args.verbose,
+            input:args.input,
+            output:args.output
+        })
+    }else{
+        argv.outputHelp()
+    }
 }
 
-function create(stack,options={}){
-    log('building '+stack,!options.silent)
-    var file=__dirname+'/../templates/'+stack
-    var output=`${__dirname}/../build/templates/${stack}.json`
+function create(options){
+    var stack=options.stack
+
+    log('building '+(options.stack || options.input),stack,!options.silent)
+    var file=options.input || __dirname+'/../templates/'+stack
+    var output=options.output || `${__dirname}/../build/templates/${stack}.json`
     
     return Promise.resolve(require(file))
     .then(x=> typeof x ==="object" ? JSON.stringify(x) : x)
     .tap(()=>log("writting to "+output,!options.silent))
     .then(temp=>fs.writeFileAsync(output,stringify(JSON.parse(temp))))
-    .then(()=>check(stack))
+    .then(()=>check(null,{file:output}))
     .tap(()=>log(chalk.green(stack+" is valid"),!options.silent))
     .tap(()=>log('finished building '+stack,!options.silent))
     .catch(error=>log(chalk.red(stack+" failed:"+error),!options.silent))

@@ -1,6 +1,6 @@
-var lambda=require('../bin/lambda.js')
+var lambda=require('./setup.js')
 
-var mock=require('../bin/mock')
+var mock=require('./mock')
 var Promise=require('bluebird')
 var aws=require('../lib/util/aws')
 var api=new aws.APIGateway()

@@ -11,7 +11,7 @@ BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied. See the
 License for the specific language governing permissions and limitations under the License.
 */
 
-var lambda=require('../bin/lambda.js')
+var lambda=require('./setup.js')
 var outputs=require('../../../bin/exports')
 var Promise=require('bluebird')
 var run=function(params,test){

@@ -36,14 +36,20 @@ if (require.main === module) {
     }
 }
 
-function run(stack,options){
-    var template=fs.readFileSync(`${__dirname}/../build/templates/${stack}.json`,'utf8')
-    if(template.length>51200){
+function run(stack,options={}){
+    var name=stack || options.file.split('/')
+        .reverse()
+        .filter(x=>x)
+        .slice(0,2)
+        .reverse().join('-').split('.')[0]
+    
+    var template=fs.readFileSync(options.file || `${__dirname}/../build/templates/${stack}.json`,'utf8')
+    if(Buffer.byteLength(template.length)>51200){
         return bootstrap().then(function(exp){
             var bucket=exp.Bucket
             var prefix=exp.Prefix
             var opts={
-                TemplateURL:`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${stack}.json`
+                TemplateURL:`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${name}.json`
             }
         })
     }else{
