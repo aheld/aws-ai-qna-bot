@@ -1,5 +1,5 @@
-LAMBDAS=$(shell for l in $$(ls ./lambda | grep -v test.js);do echo lambda/$$l;done)
-TEMPLATES=$(shell for l in $$(ls ./templates | grep -v util);do echo templates/$$l;done)
+LAMBDAS=$(shell for l in $$(ls ./lambda | grep -v test.js | grep -v README.md);do echo lambda/$$l;done)
+TEMPLATES=$(shell for l in $$(ls ./templates | grep -v util | grep -v README.md);do echo templates/$$l;done)
 
 All: templates lambda website build
 

@@ -65,7 +65,12 @@ npm run stack test/{template-name} wait
 
 For example, if you want to test the domain template run:
 ```shell
-npm run check test/domain
+npm run stack test/domain wait
+```
+
+To understand the command more run: 
+```shell 
+npm run stack -h
 ```
 
 You also can check a template's syntax with:
@@ -75,6 +80,11 @@ npm run check {template-name}
 ex. 
 ```shell
 npm run check domain
+```
+
+To understand the command more run: 
+```shell 
+npm check stack -h
 ```
 
 ### Lambda Functions

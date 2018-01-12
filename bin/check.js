@@ -44,7 +44,7 @@ function run(stack,options={}){
         .reverse().join('-').split('.')[0]
     
     var template=fs.readFileSync(options.file || `${__dirname}/../build/templates/${stack}.json`,'utf8')
-    if(Buffer.byteLength(template.length)>51200){
+    if(Buffer.byteLength(template)>51200){
         return bootstrap().then(function(exp){
             var bucket=exp.Bucket
             var prefix=exp.Prefix

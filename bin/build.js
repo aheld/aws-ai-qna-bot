@@ -25,12 +25,12 @@ if(!module.parent){
         .option('--output <output>',"output file")
         .parse(process.argv)
 
-
     if( args.stack || (args.input && args.output)){
         create({
             silent:!args.verbose,
             input:args.input,
-            output:args.output
+            output:args.output,
+            stack:args.stack
         })
     }else{
         argv.outputHelp()
@@ -39,7 +39,6 @@ if(!module.parent){
 
 function create(options){
     var stack=options.stack
-
     log('building '+(options.stack || options.input),stack,!options.silent)
     var file=options.input || __dirname+'/../templates/'+stack
     var output=options.output || `${__dirname}/../build/templates/${stack}.json`

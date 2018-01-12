@@ -5,24 +5,24 @@ DST=../../build/templates/dev
 all:$(DST)/domain.json $(DST)/bucket.json $(DST)/cognito.json $(DST)/master.json  $(DST)/bootstrap.json $(DST)/lambda.json $(DST)/api.json
 
 $(DST)/bootstrap.json:./bootstrap/*
-	 $(BUILD) $(NAME)/bootstrap
+	 $(BUILD) --stack $(NAME)/bootstrap --verbose
 
 $(DST)/domain.json:./domain.*
-	 $(BUILD) $(NAME)/domain
+	 $(BUILD)  --stack $(NAME)/domain --verbose
 
 $(DST)/api.json:./api.*
-	 $(BUILD) $(NAME)/api
+	 $(BUILD) --stack  $(NAME)/api --verbose
 
 $(DST)/lambda.json:./lambda.*
-	 $(BUILD) $(NAME)/lambda
+	 $(BUILD) --stack  $(NAME)/lambda --verbose
 
 $(DST)/bucket.json:./bucket.*
-	 $(BUILD) $(NAME)/bucket
+	 $(BUILD) --stack  $(NAME)/bucket --verbose
 
 $(DST)/cognito.json:./cognito.*
-	 $(BUILD) $(NAME)/cognito
+	 $(BUILD) --stack  $(NAME)/cognito --verbose
 
 $(DST)/master.json:./master.* ../master/*
-	 $(BUILD) $(NAME)/master
+	 $(BUILD) --stack  $(NAME)/master --verbose
 
 
