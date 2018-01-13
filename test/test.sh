@@ -9,19 +9,19 @@ while [ $x -ge 0 ]; do
     echo "Testing Website"
     cd $BASE/website & make test
     cd $BASE
-    if $__dirname/run.js $BASE/website/test/index.js; then
+    if $__dirname/run.js $BASE/website/test/index.js website; then
         echo "Finished Testing Website"
     else
         exit 1
     fi
     echo "Testing Lambdas"
-    if $__dirname/run.js $BASE/lambda/test.js; then
-        echo "Finished Testing Website"
+    if $__dirname/run.js $BASE/lambda/test.js lambdas; then
+        echo "Finished Testing Lambdas"
     else
         exit 1
     fi
     echo "Testing Api/Lex"
-    if $__dirname/run.js $BASE/templates/api/unit/index.js; then
+    if $__dirname/run.js $BASE/templates/api/unit/index.js master; then
         echo "Finished Testing Website"
     else
         exit 1

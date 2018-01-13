@@ -10,8 +10,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-rm $__dirname/debug.log;
-rm $__dirname/output.log;
-rm $__dirname/output.json;
+mkdir -p $__dirname/output
+rm $__dirname/output/*;
 
 echo "ready"

@@ -1,8 +1,9 @@
 #! /usr/bin/env node
 var fs = require('fs');
 var util = require('util');
-var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'a'});
-var output_file = fs.createWriteStream(__dirname + '/output.log', {flags : 'a'});
+var label=process.argv[3]
+var log_file = fs.createWriteStream(__dirname + `/output/log-${label}.log`, {flags : 'a'});
+var output_file = fs.createWriteStream(__dirname + `/output/output-${label}.log`, {flags : 'a'});
 var _log=console.log
 const stripAnsi = require('strip-ansi');
 
@@ -20,7 +21,7 @@ var reporter = require('./reporter');
 
 reporter
     .run([process.argv[2]],null,null,log)
-    .then(x=>fs.writeFileSync(__dirname+'/output.json',JSON.stringify(x)))
+    .then(x=>fs.writeFileSync(__dirname+`/output/output-${label}.json`,JSON.stringify(x)))
 
 
 

@@ -35,10 +35,41 @@ module.exports=_.memoize(function(stack,options={}){
         .return(exports)
     }else{
         var outputs={}
-        
-       return cf.describeStacks({
-            StackName:name(stack,{})
-        }).promise()
+        return new Promise(function(res,rej){
+            next()
+            function next(){
+                console.log(1)
+                cf.describeStacks({
+                    StackName:name(stack,{})
+                }).promise()
+                .catch(x=>x.message.match(/does not exist/),
+                    ()=>launch.sure(stack,{wait:true})
+                    .then(()=>cf.describeStacks({
+                        StackName:name(stack,{})
+                    }).promise())
+                )
+                .then(function(result){
+                    var stack=result.Stacks[0]
+                    if(["CREATE_COMPLETE",
+                        "UPDATE_COMPLETE",
+                        "UPDATE_ROLLBACK_COMPLETE"
+                        ].includes(stack.StackStatus)){
+                        res(result)
+                    }else if([
+                        "CREATE_IN_PROGRESS",
+                        "UPDATE_IN_PROGRESS",
+                        "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS",
+                        "UPDATE_ROLLBACK_IN_PROGRESS",
+                        "UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS",
+                        "REVIEW_IN_PROGRESS"
+                        ].includes(stack.StackStatus)){
+                        setTimeout(()=>next(),5*1000)
+                    }else{
+                        rej(stack.StackStatus)
+                    }
+                })
+            }
+        })
         .then(x=>x.Stacks[0].Outputs)
         .map(x=>outputs[x.OutputKey]=x.OutputValue)
         .return(outputs)

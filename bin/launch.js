@@ -22,13 +22,12 @@ if (require.main === module) {
     var args=argv.version('1.0')
         .name("npm run stack")
         .arguments('[stack] [op] [options]')
-        .usage(["[stack] [op] [options]",
-        .usage("--input <file> --action <op> [options]")
+        .usage("[stack] [op] [options]")
         .option('-v, --verbose',"print additional debuging information")
         .option('-d, --dry-run',"run command but do not launch any stacks")
         .option('--no-check',"do not check stack syntax")
         .option('-q --silent',"do output information")
-        .option('--action <action>',"the opteration to do")
+        .option('--operation <op>',"the opteration to do")
         .option('--input <input>',"input template")
         .option('--no-wait',"do not wait for stack to complete")
         .option('--no-interactive',"omit interactive elements of output (spinners etc.)")
@@ -52,7 +51,7 @@ if (require.main === module) {
         .filter(x=>x)
         .slice(0,2)
         .reverse().join('-').split('.')[0]
-    var op=options.action || (options.input ? options.args[0] : options.args[1])
+    var op=options.operation || (options.input ? options.args[0] : options.args[1])
     if( stack && op){
         switch(op){
             case "up":
@@ -101,7 +100,6 @@ function up(stack,options){
                 `${__dirname}/../build/templates/${stack}.json`
             ,'utf-8')
             if(Buffer.byteLength(template)<51200){
-                console.log(template) 
                 var start=cf.createStack({
                     StackName,
                     Capabilities:["CAPABILITY_NAMED_IAM"],
@@ -113,7 +111,6 @@ function up(stack,options){
                     var bucket=exp.Bucket
                     var prefix=exp.Prefix
                     var url=`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${stack}.json`
-                    console.log(url)
                     return s3.putObject({
                         Bucket:bucket,
                         Key:`${prefix}/templates/${stack}.json`,
@@ -143,32 +140,53 @@ function up(stack,options){
     })
 }
 function update(stack,options){
-    return syntax(stack,options)
-    .then(()=>bootstrap())
-    .then(exp=>{
+    return build({
+        stack:stack,
+        input:options.input,
+        silent:options.silent
+    })
+    .then(()=>{
         var StackName=name(stack,{})
-        log("Updating stack",options)
-        var bucket=exp.Bucket
-        var prefix=exp.Prefix
-        var url=`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${stack}.json`
+        log(`updating stack:${stack}`,options)
         if(!options.dryRun){
-            return cf.updateStack({
-                StackName,
-                Capabilities:["CAPABILITY_NAMED_IAM"],
-                TemplateURL:url
-            }).promise()
-            .then(x=>{  
+            var template=fs.readFileSync(
+                `${__dirname}/../build/templates/${stack}.json`
+            ,'utf-8')
+            if(Buffer.byteLength(template)<51200){
+                var start=cf.updateStack({
+                    StackName,
+                    Capabilities:["CAPABILITY_NAMED_IAM"],
+                    TemplateBody:template
+                }).promise()
+            }else{
+                var start=bootstrap().then(function(exp){
+                    var bucket=exp.Bucket
+                    var prefix=exp.Prefix
+                    var url=`http://s3.amazonaws.com/${bucket}/${prefix}/templates/${stack}.json`
+                    return s3.putObject({
+                        Bucket:bucket,
+                        Key:`${prefix}/templates/${stack}.json`,
+                        Body:template
+                    }).promise()
+                    .then(()=>cf.updateStack({
+                        StackName,
+                        Capabilities:["CAPABILITY_NAMED_IAM"],
+                        TemplateURL:url
+                    }).promise())
+                })
+            }
+
+            return start.then(x=>{  
                 log(`stackname: ${StackName}`,options)
                 log(`stackId: ${x.StackId}`,options)
                 if(options.wait){
                     return wait(stack,{show:!options.silent})
                 }
             })
-            .catch(x=>{throw x.message})
         }
     })
     .catch(x=>{
-        log(x,options)
+        log("failed"+x,options)
         process.exit(1)
     })
 }

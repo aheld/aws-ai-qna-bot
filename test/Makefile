@@ -2,5 +2,6 @@
 	../bin/build.js --input $$(pwd)/cfn/index.js --output $$(pwd)/../build/templates/test.json --verbose
 
 up: ../build/templates/test.json
-	npm run stack -- --input $$(pwd)/cfn/index.js --action up
+	npm run stack -- --input $$(pwd)/cfn/index.js --operation up
+
 

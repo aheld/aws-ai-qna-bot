@@ -33,7 +33,7 @@ exports.run=function(opts,test,not=true){
 }
 exports.api=api
 function  api(opts){
-    return outputs('dev/master').then(function(output){
+    return outputs('dev/master',{wait:true}).then(function(output){
         var href=opts.path ? output.ApiEndpoint+'/'+opts.path : opts.href
         console.log(opts)
         var url=Url.parse(href)
@@ -57,7 +57,6 @@ function  api(opts){
         delete request.headers["Content-Length"]        
         
         return Promise.resolve(axios(signed))
-        .tapCatch(console.log)
         .get('data')
         .tap(x=>console.log("response:",JSON.stringify(x,null,2)))
     })
