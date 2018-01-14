@@ -38,7 +38,6 @@ module.exports=_.memoize(function(stack,options={}){
         return new Promise(function(res,rej){
             next()
             function next(){
-                console.log(1)
                 cf.describeStacks({
                     StackName:name(stack,{})
                 }).promise()
