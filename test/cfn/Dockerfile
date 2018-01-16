@@ -26,6 +26,7 @@ ENV PYTHONIOENCODING=UTF-8
 # python* is needed to install aws cli using pip install
 
 RUN apt-get install -y \
+    zip \
     git \
     curl \
     python \

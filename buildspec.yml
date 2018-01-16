@@ -16,6 +16,4 @@ phases:
       - ./test/teardown.js
 artifacts:
   files:
-    - ./test/debug.log
-    - ./test/output.log
-    - ./test/output.json
+    - ./test/output/**/*
