@@ -18,10 +18,12 @@ cf.listStacks({
 }).promise()
 .then(x=>x.StackSummaries.filter(x=>x.StackName.match(prefix))
 .map(x=>x.StackName))
-.map(StackName=>cf.deleteStack({StackName}).promise()
-.then(()=>{
+.map(StackName=>{
     console.log(`deleting: ${StackName}`)
-    return new Promise(function(rej,res){
+    return cf.deleteStack({StackName}).promise()
+})
+.then(()=>{
+    return new Promise(function(res,rej){
         next()
         function next(){
             cf.listStacks({
@@ -39,6 +41,5 @@ cf.listStacks({
             .catch(rej)
         }
     })
-}))
-
+})
 
