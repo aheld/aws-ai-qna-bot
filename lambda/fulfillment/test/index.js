@@ -33,7 +33,7 @@ var run=function(params,schema,test){
         .catch(test.ifError)
         .finally(test.done)
 }
-var Router=new require('../router')
+var Router=new require('../lib/router')
 
 module.exports={
     router:{

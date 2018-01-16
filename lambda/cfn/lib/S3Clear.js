@@ -2,7 +2,7 @@ var aws=require('./util/aws')
 var Promise=require('bluebird')
 var s3=new aws.S3()
 
-module.exports=class CognitoUser extends require('./base') {
+module.exports=class S3Clear extends require('./base') {
     constructor(){
         super()
     }

@@ -79,9 +79,9 @@ function lifecycle(params,test){
         mock.register(status=>test.equal(status,"SUCCESS"))
         var ser=mock.server(test)
 
-        return lambda(params.create)
-        .then(()=>lambda(params.update))
-        .then(()=>lambda(params.delete))
+        return lambda(params.create())
+        .then(()=>lambda(params.update()))
+        .then(()=>lambda(params.delete()))
         .catch(test.ifError)
         .finally(()=>{
             ser.close()

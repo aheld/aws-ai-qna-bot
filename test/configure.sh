@@ -34,4 +34,6 @@ cat $BASE/config.json > $BASE/tmp.json
 cat $BASE/tmp.json |  $BIN/json.js -e "this.namespace='Validate'" > $BASE/config.json
 rm $BASE/tmp.json
 
-
+if [ -n $ASK_CREDENTIALS ]; then
+    echo "$ASK_CREDENTIALS" >> ~/.ask/cli_config
+fi

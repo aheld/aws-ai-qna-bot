@@ -2,7 +2,6 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var chalk=require('chalk')
 var Promise=require('bluebird')
-var run=require('./run.js')
 var config=require('../../../config')
 
 var fs=Promise.promisifyAll(require('fs'))
@@ -14,8 +13,16 @@ module.exports=function(event){
     process.env.AWS_ACCESS_KEY_ID=aws.config.credentials.accessKeyId
     process.env.AWS_SECRET_ACCESS_KEY=aws.config.credentials.secretAccessKey
     process.env.AWS_REGION=config.region
+
     
-    return run(require('../index.js').handler,event).return(true)
+    return Promise.resolve(event).then(function(ev){
+        return new Promise(function(res,rej){
+            require('../index.js').handler(ev,{
+                invokedFunctionArn:"arn:aws:lambda:us-east-1:111111111111:function:tmp",
+                done:res
+            })
+        })
+    })
 }
 
 

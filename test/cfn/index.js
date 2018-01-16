@@ -1,4 +1,6 @@
 var fs=require('fs')
+var Promise=require('bluebird')
+var child=Promise.promisifyAll(require('child_process'))
 var JSZip = require("jszip");
 var zip=new JSZip()
 
@@ -7,9 +9,13 @@ zip.file('Dockerfile',fs.readFileSync(__dirname+'/Dockerfile','utf-8'))
 
 var tag="test"
 var source="source.zip"
-module.exports=Promise.resolve(zip.generateAsync({type:'nodebuffer'}))
-    .then(function(buff){
-        return {
+module.exports=Promise.join(
+    Promise.resolve(zip.generateAsync({type:'nodebuffer'})),
+    child.execAsync('git rev-parse --abbrev-ref HEAD',{
+        cwd:__dirname
+    })
+).spread(function(buff,branch){
+    return {
        "Description": "This template creates test infastructure for testing QnABot",
        "Resources":{
         "Repo":{
@@ -132,7 +138,7 @@ module.exports=Promise.resolve(zip.generateAsync({type:'nodebuffer'}))
             "Properties": {
                 "ServiceToken": { "Fn::GetAtt" : ["BuildLambda", "Arn"] },
                 "name":{"Ref":"testBuild"},
-                "branch":"feature-remove-exports"
+                "branch":branch
             }
         },
         "ClearImageLambda":lambda("clearImage"),

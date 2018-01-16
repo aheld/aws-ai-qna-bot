@@ -33,7 +33,8 @@ RUN apt-get install -y \
     python-pip \
     python-virtualenv 
 
-RUN pip install awscli
+RUN pip install awscli 
 RUN curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - && \
     apt-get install -y nodejs
+RUN npm install -g ask-cli
 
