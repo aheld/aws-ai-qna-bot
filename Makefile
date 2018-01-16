@@ -13,21 +13,19 @@ config.json:
 
 lambda: $(LAMBDAS) build
 	for l in $(LAMBDAS); do \
-		cd $$l && make; \
-		cd ../..;	\
+		$(MAKE) -C $$l;		\
 	done;			
 
 bootstrap: build
-	cd templates/dev && make ../../build/templates/dev/bootstrap.json; cd ../..
+	$(MAKE) -C templates/dev
 
 templates: $(TEMPLATES) build
-	for l in $(TEMPLATES); do \
-		cd $$l && make; \
-		cd ../..;	\
+	for l in $(TEMPLATES); do	\
+		$(MAKE) -C $$l;			\
 	done;			
 
 website: build
-	cd ./website; make 
+	$(MAKE) -C ./website
 
 samples:docs/blog-samples.json build
 	cp docs/blog-samples.json build/documents

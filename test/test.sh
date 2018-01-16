@@ -7,7 +7,7 @@ x=4
 while [ $x -ge 0 ]; do
     echo "Run Number:$x"
     echo "Testing Website"
-    cd $BASE/website && make test
+    make -C $BASE/website test
     cd $BASE
     if $__dirname/run.js $BASE/website/test/index.js website; then
         echo "Finished Testing Website"
