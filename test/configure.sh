@@ -25,15 +25,11 @@ if [ ! -f ./config.json ]; then
     CLI_REGION=$(aws configure get region --profile $PROFILE)
     echo "creating config"
 
-    node $BASE/config.js.example john@example.com $CLI_REGION > $BASE/config.json
-    cat $BASE/config.json > $BASE/tmp.json
-    cat $BASE/tmp.json | $BIN/json.js -e "this.profile='$PROFILE'" > $BASE/config.json
-    rm $BASE/tmp.json
+    node $BASE/bin/config.js john@example.com $CLI_REGION   \
+        | $BIN/json.js -e "this.profile='$PROFILE'"         \
+        |  $BIN/json.js -e "this.namespace='$NAMESPACE'"    \
+        > $BASE/config.json
 fi
-
-cat $BASE/config.json > $BASE/tmp.json
-cat $BASE/tmp.json |  $BIN/json.js -e "this.namespace='$NAMESPACE'" > $BASE/config.json
-rm $BASE/tmp.json
 
 if [ -n "$ASK_CREDENTIALS" ]; then
     echo "$ASK_CREDENTIALS" >> ~/.ask/cli_config
