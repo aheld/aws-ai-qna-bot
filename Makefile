@@ -9,7 +9,7 @@ build:
 .PHONY: lambda templates upload website test bootstrap
 
 config.json:
-	node config.js.example > config.json
+	node bin/config.js > config.json
 
 lambda: $(LAMBDAS) build
 	for l in $(LAMBDAS); do \
