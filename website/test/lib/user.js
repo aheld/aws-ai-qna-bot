@@ -8,14 +8,14 @@ var faker=require('faker')
 exports.delete=function(name){
     return outputs('dev/master').then(function(output){
         return cdp.adminDeleteUser({
-            UserPoolId:out.UserPool,
+            UserPoolId:output.UserPool,
             Username:name
         }).promise()
     })
 }
 exports.create=function(){
     return outputs('dev/master').then(function(output){
-        var UserPoolId=output.UserPool,
+        var UserPoolId=output.UserPool
         var ClientId=output.DesignerClientId
         var Username=faker.internet.userName()
         var password=[
@@ -28,13 +28,13 @@ exports.create=function(){
         var userpool=new cognito.CognitoUserPool({
             UserPoolId,ClientId
         })
-
-        cdp.adminCreateUser({
+        
+        return cdp.adminCreateUser({
             UserPoolId,
             Username,
             TemporaryPassword:password,
-            ValidationData:[{
-                Name:"Email",
+            UserAttributes:[{
+                Name:"email",
                 Value:faker.internet.exampleEmail()
             }]
         }).promise()
@@ -55,6 +55,7 @@ exports.create=function(){
                 Username:Username,
                 Pool:userpool
             })
+            
             return new Promise(function(res,rej){ 
                 user.authenticateUser(auth,{
                     onSuccess:res,
@@ -65,7 +66,7 @@ exports.create=function(){
                         pass=password
                         user.completeNewPasswordChallenge(
                             pass, 
-                            userAttributes, 
+                            {}, 
                             this);
                     }
                 })
