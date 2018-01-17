@@ -3,7 +3,7 @@ var Promise=require('bluebird')
 var child=Promise.promisifyAll(require('child_process'))
 var JSZip = require("jszip");
 var zip=new JSZip()
-
+var package=require('../../package.json')
 zip.file('buildspec.yml',fs.readFileSync(__dirname+'/buildspec.yml','utf-8'))
 zip.file('Dockerfile',fs.readFileSync(__dirname+'/Dockerfile','utf-8'))
 
@@ -13,7 +13,7 @@ module.exports=Promise.join(
     Promise.resolve(zip.generateAsync({type:'nodebuffer'})),
     child.execAsync('git rev-parse --abbrev-ref HEAD',{
         cwd:__dirname
-    })
+    }).then(x=>x.trim())
 ).spread(function(buff,branch){
     return {
        "Description": "This template creates test infastructure for testing QnABot",
@@ -54,7 +54,7 @@ module.exports=Promise.join(
                 ServiceRole:{"Ref":"TestServiceRole"},
                 Source:{
                     Type:"GITHUB",
-                    Location:"https://github.com/awslabs/aws-ai-qna-bot.git",
+                    Location:package.repository.url,
                     Auth:{
                         Type:"OAUTH"
                     }
