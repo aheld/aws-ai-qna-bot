@@ -58,7 +58,8 @@ module.exports=Promise.join(
                     Auth:{
                         Type:"OAUTH"
                     }
-                }
+                },
+                TimeoutInMinutes:4*60
             }
         },
         "ImageBuild":{
