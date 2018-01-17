@@ -5,6 +5,7 @@ BIN=$__dirname/../bin
 cd $BASE
 
 PROFILE="default"
+NAMESPACE="test"
 
 if aws s3 ls --profile $PROFILE >> /dev/null; then
     echo "aws cli configured"
@@ -31,7 +32,7 @@ if [ ! -f ./config.json ]; then
 fi
 
 cat $BASE/config.json > $BASE/tmp.json
-cat $BASE/tmp.json |  $BIN/json.js -e "this.namespace='Validate'" > $BASE/config.json
+cat $BASE/tmp.json |  $BIN/json.js -e "this.namespace='$NAMESPACE'" > $BASE/config.json
 rm $BASE/tmp.json
 
 if [ -n "$ASK_CREDENTIALS" ]; then
