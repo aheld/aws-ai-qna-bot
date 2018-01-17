@@ -1,5 +1,5 @@
 # Fulfilment Lambda
-This the lambda that fulfills Lex and Alexa requests. 
+This is the lambda that fulfills Lex and Alexa requests. 
 
 ## Tests
 test are run using:

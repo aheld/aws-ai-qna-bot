@@ -20,9 +20,9 @@ var ran
 
 if (require.main === module) {
     var args=argv.version('1.0')
+        .description("Manage Cloudformation stacks. stack name is path to template file relative to /templates")
         .name("npm run stack")
         .arguments('[stack] [op] [options]')
-        .usage("[stack] [op] [options]")
         .option('-v, --verbose',"print additional debuging information")
         .option('-d, --dry-run',"run command but do not launch any stacks")
         .option('--no-check',"do not check stack syntax")
@@ -34,13 +34,17 @@ if (require.main === module) {
         .on('--help',()=>{
             log(
 `  
-  operations:
+  Operations:
 
     up:         launch a stack
     update:     update a stack
     down:       terminate a stack
     restart:    terminate a stack then launch a new one
-    make-sure:  check is stack is up, if not then launch one
+    make-sure:  check if stack is up, if not then launch one
+
+  Examples:
+    npm run stack dev/bootstrap up -- --no-wait --verbose
+    npm run stack -- --input ./test/cfn --operation make-sure --dry-run
 `,{})
         })
         .parse(process.argv)

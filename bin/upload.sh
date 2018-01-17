@@ -12,5 +12,3 @@ RESET=$(tput sgr0)
 echo bootstrap bucket is $BLUE$BUCKET/$PREFIX$RESET
 
 aws s3 sync $__dirname/../build/ s3://$BUCKET/$PREFIX/ --delete  
-
-

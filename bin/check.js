@@ -20,7 +20,9 @@ if (require.main === module) {
     var args=argv.version('1.0')
         .name('npm run check')
         .arguments('<stack>')
+        .description("Check syntax of cloudformation templates")
         .usage("<stack> [options]")
+        .option("--file <file>","absolute path to template file")
         .action(function(stack,options){
             ran=true
             run(stack,options)

@@ -1,5 +1,5 @@
-# Lex-Build Lambda
-Rebuilds AWS Lex Bot
+# Proxy-es
+This lambda function is used to proxy request from apigateway to elasticsearch
 
 ## Tests
 test are running using:
